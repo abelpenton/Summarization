@@ -23,6 +23,14 @@ def _count_common_words(words_sentence_one, words_sentence_two):
     return len(set(words_sentence_one) & set(words_sentence_two))
 
 
+def _add_scores_to_sentences(sentences, scores):
+    for sentence in sentences:
+        if sentence.token in scores:
+            sentence.score = scores[sentence.token]
+        else:
+            sentence.score = 0
+
+
 
 def summarize():
     return 0
