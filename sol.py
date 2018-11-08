@@ -30,6 +30,10 @@ def _add_scores_to_sentences(sentences, scores):
         else:
             sentence.score = 0
 
+def _extract_most_important_sentences(sentences, ratio):
+    sentences.sort(key=lambda s: s.score, reverse=True)
+    length = len(sentences) * ratio
+    return sentences[:int(length)]
 
 
 def summarize():
