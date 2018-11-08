@@ -64,8 +64,8 @@ def summarize(text, ratio=0.2, language="english"):
     # Sorts the extracted sentences by apparition order in the original text.
     extracted_sentences.sort(key=lambda s: s.index)
 
-    return 0
-    #return _format_results(extracted_sentences)
+    #return 0
+    return _format_results(extracted_sentences)
 
 
 def _format_results(extracted_sentences):
