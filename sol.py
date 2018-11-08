@@ -37,6 +37,32 @@ def _extract_most_important_sentences(sentences, ratio):
     length = len(sentences) * ratio
     return sentences[:int(length)]
 
+def summarize(text, ratio=0.2, language="english"):    
+    # Gets a list of processed sentences.
+    sentences = clean_text_by_sentences(text, language)
 
-def summarize():
+    # Creates the graph and calculates the similarity coefficient for every pair of nodes.
+    graph = build_graph([sentence.token for sentence in sentences])
+    _set_graph_edge_weights(graph)
+
+    # Remove all nodes with all edges weights equal to zero.
+    remove_unreachable_nodes(graph)
+
+    # PageRank cannot be run in an empty graph.
+    if len(graph.nodes()) == 0:
+        return []
+
+    # Ranks the tokens using the PageRank algorithm. Returns dict of sentence -> score
+    pagerank_scores = pagerank_weighted(graph)
+
+    # Adds the summa scores to the sentence objects.
+    _add_scores_to_sentences(sentences, pagerank_scores)
+
+    # Extracts the most important sentences with the selected criterion.
+    extracted_sentences = _extract_most_important_sentences(sentences, ratio)
+
+    # Sorts the extracted sentences by apparition order in the original text.
+    extracted_sentences.sort(key=lambda s: s.index)
+
     return 0
+    #return _format_results(extracted_sentences)
