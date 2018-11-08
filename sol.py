@@ -66,3 +66,17 @@ def summarize(text, ratio=0.2, language="english"):
 
     return 0
     #return _format_results(extracted_sentences)
+
+
+def _format_results(extracted_sentences):
+    return "\n".join([sentence.text for sentence in extracted_sentences])
+
+def get_text_from_test_data(file):
+    pre_path = os.path.join(os.path.dirname(__file__))
+    with open(os.path.join(pre_path, file), mode='r', encoding="utf-8") as f:
+        return f.read()
+
+text = get_text_from_test_data("mihalcea_tarau.txt")
+generated_summary = summarize(text)
+
+print(generated_summary)
