@@ -1,11 +1,39 @@
 from utils.textcleaner import clean_text_by_sentences
 from graphBuild import build_graph
 from graphBuild import remove_unreachable_nodes
-from graphBuild import _set_graph_edge_weights
-from graphBuild import _create_valid_graph
 from pagerank_weighted import pagerank_weighted
 import os.path
 from math import log10
+
+def _set_graph_edge_weights(graph):
+    for sentence_1 in graph.nodes():
+        for sentence_2 in graph.nodes():
+
+            edge = (sentence_1, sentence_2)
+            if sentence_1 != sentence_2 and not graph.has_edge(edge):
+                similarity = _get_similarity(sentence_1, sentence_2)
+                if similarity != 0:
+                    graph.add_edge(edge, similarity)
+
+    if all(graph.edge_weight(edge) == 0 for edge in graph.edges()):
+        _create_valid_graph(graph)
+
+
+def _create_valid_graph(graph):
+    nodes = graph.nodes()
+
+    for i in range(len(nodes)):
+        for j in range(len(nodes)):
+            if i == j:
+                continue
+
+            edge = (nodes[i], nodes[j])
+
+            if graph.has_edge(edge):
+                graph.del_edge(edge)
+
+            graph.add_edge(edge, 1)
+
 
 def _get_similarity(s1, s2):
     words_sentence_one = s1.split()
@@ -76,7 +104,7 @@ def get_text_from_test_data(file):
     with open(os.path.join(pre_path, file), mode='r', encoding="utf-8") as f:
         return f.read()
 
-text = get_text_from_test_data("mihalcea_tarau.txt")
+text = get_text_from_test_data("examples/mihalcea_tarau.txt")
 generated_summary = summarize(text)
 
 print(generated_summary)
